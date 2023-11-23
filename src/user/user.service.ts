@@ -1,17 +1,17 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { User } from './entities/user.entity';
 
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RegisterUserDto } from './dtos/register-user.dto';
-import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+
+import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
+import { RegisterUserDto } from './dtos/register-user.dto';
 import { PayloadModel } from './models/payload.model';
 import { ObjectId } from 'mongodb';
 
@@ -70,7 +70,7 @@ export class UserService {
   }
 
   async updateUserProfile(body: UpdateUserProfileDto, id: string) {
-    const user = await this.userRepository.findOne({
+    let user = await this.userRepository.findOne({
       where: {
         _id: new ObjectId(id),
       },
@@ -79,8 +79,9 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('user not found');
     }
-    Object.assign(user, body);
-
-    return await this.userRepository.save(user);
+ 
+    Object.assign(user.profile, body);
+    user = await this.userRepository.save(user);
+    return user;     
   }
 }

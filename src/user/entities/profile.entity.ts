@@ -1,23 +1,29 @@
 import { splitEnum } from 'src/util/split-enum';
 import { Column } from 'typeorm';
 import { gender } from '../enum/gender.enum';
+import { Expose } from 'class-transformer';
 
 export class Profile {
+  @Expose()
   @Column({
     nullable: false,
   })
   fullName: string;
 
+  @Expose()
   @Column({
     nullable: true,
+    type: 'date'
   })
-  birthday: string;
+  birthday: Date;
 
+  @Expose()
   @Column({
     nullable: true,
   })
   country: string;
 
+  @Expose()
   @Column({
     nullable: true,
     enum: splitEnum(gender),
@@ -25,14 +31,16 @@ export class Profile {
   })
   gender: string;
 
+  @Expose()
   @Column({
     nullable: true,
+    length: 10
   })
   phoneNumber: string;
 
   constructor(
     fullName: string,
-    birthday: string,
+    birthday: Date,
     country: string,
     gender: string,
     phoneNumber: string,

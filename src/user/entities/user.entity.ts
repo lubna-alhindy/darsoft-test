@@ -1,12 +1,15 @@
 import { Column, Entity, ObjectIdColumn, ObjectId } from 'typeorm';
 import { Profile } from './profile.entity';
 import * as bcrypt from 'bcrypt';
+import { Expose } from 'class-transformer';
 
 @Entity()
 export class User {
+  @Expose()
   @ObjectIdColumn()
   _id: ObjectId;
 
+  @Expose()
   @Column({
     unique: true,
     nullable: false,
@@ -21,9 +24,11 @@ export class User {
   })
   password: string;
 
+  @Expose()
   @Column(() => Profile)
   profile: Profile;
 
+  @Expose()
   @Column({
     default: false,
   })
