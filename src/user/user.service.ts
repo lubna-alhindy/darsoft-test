@@ -37,6 +37,7 @@ export class UserService {
       this.userRepository.create({
         email: body.email,
         password: await bcrypt.hash(body.password, await bcrypt.genSalt()),
+        isAdmin: false,
         profile: {
           fullName: body.fullName,
         },
