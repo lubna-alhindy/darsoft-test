@@ -34,6 +34,12 @@ export class User {
   })
   isAdmin: boolean;
 
+  @Expose()
+  @Column({
+    type: 'date'
+  })
+  createdAt: Date;
+
   async validatePassword(password: string) {
     return await bcrypt.compare(password, this.password);
   }

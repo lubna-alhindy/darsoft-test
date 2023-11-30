@@ -38,6 +38,7 @@ export class UserService {
         email: body.email,
         password: await bcrypt.hash(body.password, await bcrypt.genSalt()),
         isAdmin: false,
+        createdAt: new Date(),
         profile: {
           fullName: body.fullName,
         },
@@ -80,9 +81,13 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('user not found');
     }
- 
+
     Object.assign(user.profile, body);
     user = await this.userRepository.save(user);
-    return user;     
+    return user;
+  }
+
+  async getAllUser() {
+    return this.userRepository.find();
   }
 }

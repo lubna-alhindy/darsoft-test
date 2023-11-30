@@ -1,4 +1,5 @@
 import {
+  Get,
   Body,
   Post,
   Patch,
@@ -13,7 +14,14 @@ import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { LoginRequestModel } from './models/login-request.model';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiHeader,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LoginDto } from './dtos/login.dto';
 import { User } from './entities/user.entity';
 import { Serialize } from 'src/util/serialize.decorator';
@@ -24,6 +32,10 @@ export class UserController {
   constructor(private service: UserService) {}
 
   @Post('register')
+  @ApiOperation({
+    summary: 'Add User',
+    description: 'register user',
+  })
   @Serialize<User>(User)
   registerUser(@Body() body: RegisterUserDto) {
     return this.service.registerUser(body);
@@ -39,7 +51,30 @@ export class UserController {
   @Patch()
   @Serialize<User>(User)
   @UseGuards(JWTAuthGuard)
+  @ApiResponse({ status: 404, description: 'user not found' })
+  @ApiResponse({
+    status: 200,
+    description: 'user updated successfully',
+    type: UpdateUserProfileDto,
+  })
   updateUserProfile(@Body() body: UpdateUserProfileDto, @Request() req: any) {
     return this.service.updateUserProfile(body, req.user.sub._id);
+  }
+
+  @Get('all')
+  @UseGuards(JWTAuthGuard)
+  @Serialize<User>(User)
+  @ApiOperation({
+    description: 'get all user in the system',
+  })
+  @ApiBearerAuth('authorization')
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Auth token',
+    
+  })
+  getAllUser(@Request() req) {
+    console.log(req.headers);
+    return this.service.getAllUser();
   }
 }
