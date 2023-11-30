@@ -15,12 +15,11 @@ import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { LoginRequestModel } from './models/login-request.model';
 import {
-  ApiBearerAuth,
   ApiBody,
-  ApiHeader,
+  ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiTags,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { LoginDto } from './dtos/login.dto';
 import { User } from './entities/user.entity';
@@ -48,6 +47,7 @@ export class UserController {
     return this.service.login(req.user);
   }
 
+  @ApiBearerAuth('authorization')
   @Patch()
   @Serialize<User>(User)
   @UseGuards(JWTAuthGuard)
@@ -61,17 +61,12 @@ export class UserController {
     return this.service.updateUserProfile(body, req.user.sub._id);
   }
 
+  @ApiBearerAuth('authorization')
   @Get('all')
   @UseGuards(JWTAuthGuard)
   @Serialize<User>(User)
   @ApiOperation({
     description: 'get all user in the system',
-  })
-  @ApiBearerAuth('authorization')
-  @ApiHeader({
-    name: 'authorization',
-    description: 'Auth token',
-    
   })
   getAllUser(@Request() req) {
     console.log(req.headers);
