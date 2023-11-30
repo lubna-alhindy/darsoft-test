@@ -68,8 +68,7 @@ export class UserController {
   @ApiOperation({
     description: 'get all user in the system',
   })
-  getAllUser(@Request() req) {
-    console.log(req.headers);
+  getAllUser() {
     return this.service.getAllUser();
   }
 }
